@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: dart format --set-exit-if-changed .
+      - run: dart analyze --fatal-infos
+      - run: dart test
+      - run: dart pub get
+        working-directory: example
+      - run: dart run main.dart
+        working-directory: example
+      - run: dart pub publish --dry-run
