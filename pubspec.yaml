@@ -1,8 +1,8 @@
 name: ilkersevim_retry
 description: >-
-  Retry policies with backoff, jitter, and cancel tokens. Pure Dart;
-  injectable RetryDelay for testable waits.
-version: 0.1.1
+  Add HTTP-client-neutral retries with backoff, jitter, cancellation, and
+  injectable delays for deterministic Dart tests.
+version: 0.1.2
 repository: https://github.com/redjadet/ilkersevim_retry
 homepage: https://github.com/redjadet/ilkersevim_retry
 issue_tracker: https://github.com/redjadet/ilkersevim_retry/issues
