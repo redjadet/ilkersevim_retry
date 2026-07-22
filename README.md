@@ -3,6 +3,15 @@
 Retry policies with backoff, jitter, and cancel tokens. Pure Dart; injectable
 `RetryDelay` for testable waits.
 
+## Why use this package?
+
+- Apply the same retry policy to HTTP, storage, or other async work without
+  coupling business logic to one client library.
+- Control attempt limits, fixed/linear/exponential backoff, jitter, and retry
+  filtering in one place.
+- Cancel pending retries and inject instant or virtual delays for fast,
+  deterministic tests.
+
 This package's `CancelToken` is **not** `package:dio`'s `CancelToken`.
 
 License: [Apache-2.0](LICENSE). Issues:
@@ -12,7 +21,7 @@ License: [Apache-2.0](LICENSE). Issues:
 
 ```yaml
 dependencies:
-  ilkersevim_retry: ^0.1.0
+  ilkersevim_retry: ^0.1.2
 ```
 
 Requires Dart `>=3.12.0`.
