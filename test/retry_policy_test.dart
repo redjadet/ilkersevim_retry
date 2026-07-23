@@ -80,6 +80,37 @@ void main() {
       expect(callCount, 1); // Should not retry
     });
 
+    test('transientErrors preset does not retry StateError', () async {
+      int callCount = 0;
+      await expectLater(
+        () => RetryPolicy.transientErrors.executeWithRetry<int>(
+          action: () async {
+            callCount++;
+            throw StateError('logic bug');
+          },
+        ),
+        throwsA(isA<StateError>()),
+      );
+      expect(callCount, 1);
+    });
+
+    test('transientErrors preset retries TimeoutException', () async {
+      int callCount = 0;
+      final int result = await RetryPolicy.transientErrors
+          .executeWithRetry<int>(
+            action: () async {
+              callCount++;
+              if (callCount < 2) {
+                throw TimeoutException('slow');
+              }
+              return 7;
+            },
+            delay: _immediateRetryDelay,
+          );
+      expect(result, 7);
+      expect(callCount, 2);
+    });
+
     test('executeWithRetry cancels when cancelToken is cancelled', () async {
       const policy = RetryPolicy(
         maxAttempts: 3,
