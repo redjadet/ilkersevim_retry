@@ -18,7 +18,7 @@ Future<T> _retryPolicyExecuteWithRetry<T>(
       lastError = error;
       lastStackTrace = stackTrace;
 
-      if (!_retryPolicyShouldRetryError(error, shouldRetry)) {
+      if (!_retryPolicyShouldRetryError(policy, error, shouldRetry)) {
         rethrow;
       }
 
@@ -51,13 +51,16 @@ Future<T> _retryPolicyExecuteWithRetry<T>(
 }
 
 bool _retryPolicyShouldRetryError(
+  final RetryPolicy policy,
   final Object error,
   final bool Function(Object error)? shouldRetry,
 ) {
   if (error is CancellationException) {
     return false;
   }
-  return shouldRetry?.call(error) ?? true;
+  final bool Function(Object error)? effective =
+      shouldRetry ?? policy.shouldRetry;
+  return effective?.call(error) ?? true;
 }
 
 void _retryPolicyThrowIfCancelled(

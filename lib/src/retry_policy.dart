@@ -31,12 +31,17 @@ enum RetryStrategy {
 /// (testable / app-adapted delays). When null, uses [Future.delayed].
 class RetryPolicy {
   /// Creates a retry policy with the specified configuration.
+  ///
+  /// When [shouldRetry] is null, [executeWithRetry] retries every error except
+  /// [CancellationException] unless the caller passes a per-call [shouldRetry].
+  /// Prefer an explicit filter for non-idempotent work.
   const RetryPolicy({
     this.maxAttempts = 3,
     this.baseDelay = const Duration(seconds: 1),
     this.maxDelay = const Duration(seconds: 30),
     this.strategy = RetryStrategy.exponential,
     this.jitter = true,
+    this.shouldRetry,
   }) : assert(maxAttempts > 0, 'maxAttempts must be greater than 0');
 
   /// Maximum number of retry attempts (including initial attempt).
@@ -53,6 +58,10 @@ class RetryPolicy {
 
   /// Whether to add random jitter to delays (helps prevent thundering herd).
   final bool jitter;
+
+  /// Default error filter for this policy. Per-call [executeWithRetry] override
+  /// wins when provided.
+  final bool Function(Object error)? shouldRetry;
 
   /// Execute an action with retry logic.
   ///
@@ -139,15 +148,37 @@ class RetryPolicy {
     return Duration(milliseconds: clampedMs);
   }
 
-  /// Create a default retry policy for transient errors (5xx, timeouts).
+  /// Create a default retry policy for transient errors (timeouts).
+  ///
+  /// Does **not** retry [ArgumentError], [StateError], [FormatException], or
+  /// [CancellationException]. Pass a custom [shouldRetry] for HTTP/status codes.
   static const RetryPolicy transientErrors = RetryPolicy(
     maxDelay: Duration(seconds: 10),
+    shouldRetry: isTransientError,
   );
 
-  /// Create a retry policy for network errors with longer delays.
+  /// Create a retry policy for network-style timeouts with longer delays.
   static const RetryPolicy networkErrors = RetryPolicy(
     baseDelay: Duration(seconds: 2),
+    shouldRetry: isTransientError,
   );
+
+  /// Conservative classifier used by [transientErrors] / [networkErrors].
+  static bool isTransientError(final Object error) {
+    if (error is CancellationException) {
+      return false;
+    }
+    if (error is TimeoutException) {
+      return true;
+    }
+    if (error is ArgumentError ||
+        error is StateError ||
+        error is FormatException ||
+        error is TypeError) {
+      return false;
+    }
+    return false;
+  }
 }
 
 /// Token for cancelling retry operations.

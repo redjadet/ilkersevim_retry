@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3
+
+- Add optional policy-level `shouldRetry` (per-call override still wins).
+- Make `transientErrors` / `networkErrors` fail closed: do not retry
+  `ArgumentError`, `StateError`, `FormatException`, `TypeError`, or other
+  non-timeout errors (only `TimeoutException` by default).
+- Document that a null filter still retries every non-cancellation error.
+
+
 ## 0.1.2
 
 - Explain how client-neutral policies centralize backoff, cancellation, and
