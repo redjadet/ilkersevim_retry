@@ -72,7 +72,7 @@ void main() {
             callCount++;
             throw Exception('Non-retryable error');
           },
-          shouldRetry: (final error) => false,
+          shouldRetry: (error) => false,
         ),
         throwsA(isA<Exception>()),
       );
@@ -174,7 +174,7 @@ void main() {
           }
           return 42;
         },
-        delay: (final Duration duration) async {
+        delay: (Duration duration) async {
           recorded.add(duration);
         },
       );
@@ -200,7 +200,7 @@ void main() {
             throw Exception('Error');
           },
           cancelToken: CancelToken(),
-          delay: (final Duration duration) async {
+          delay: (Duration duration) async {
             recorded.add(duration);
           },
         ),
@@ -236,7 +236,7 @@ void main() {
           throw Exception('Error');
         },
         cancelToken: cancelToken,
-        delay: (final Duration duration) {
+        delay: (Duration duration) {
           gate = Completer<void>();
           return gate!.future;
         },
@@ -367,4 +367,4 @@ void main() {
   });
 }
 
-Future<void> _immediateRetryDelay(final Duration duration) async {}
+Future<void> _immediateRetryDelay(Duration duration) async {}

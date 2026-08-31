@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.13.2'
       - run: dart pub get
       - run: dart format --set-exit-if-changed .
       - run: dart analyze --fatal-infos

@@ -21,10 +21,10 @@ License: [Apache-2.0](LICENSE). Issues:
 
 ```yaml
 dependencies:
-  ilkersevim_retry: ^0.1.4
+  ilkersevim_retry: ^0.1.5
 ```
 
-Requires Dart `>=3.12.0`.
+Requires Dart `>=3.13.0`.
 
 ## Usage
 

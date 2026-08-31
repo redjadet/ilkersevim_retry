@@ -1,11 +1,11 @@
 part of 'retry_policy.dart';
 
 Future<T> _retryPolicyExecuteWithRetry<T>(
-  final RetryPolicy policy, {
-  required final Future<T> Function() action,
-  final CancelToken? cancelToken,
-  final bool Function(Object error)? shouldRetry,
-  final RetryDelay? delay,
+  RetryPolicy policy, {
+  required Future<T> Function() action,
+  CancelToken? cancelToken,
+  bool Function(Object error)? shouldRetry,
+  RetryDelay? delay,
 }) async {
   Object? lastError;
   StackTrace? lastStackTrace;
@@ -51,9 +51,9 @@ Future<T> _retryPolicyExecuteWithRetry<T>(
 }
 
 bool _retryPolicyShouldRetryError(
-  final RetryPolicy policy,
-  final Object error,
-  final bool Function(Object error)? shouldRetry,
+  RetryPolicy policy,
+  Object error,
+  bool Function(Object error)? shouldRetry,
 ) {
   if (error is CancellationException) {
     return false;
@@ -64,8 +64,8 @@ bool _retryPolicyShouldRetryError(
 }
 
 void _retryPolicyThrowIfCancelled(
-  final CancelToken? cancelToken, {
-  final bool duringDelay = false,
+  CancelToken? cancelToken, {
+  bool duringDelay = false,
 }) {
   if (cancelToken?.isCancelled ?? false) {
     throw CancellationException(
@@ -75,12 +75,12 @@ void _retryPolicyThrowIfCancelled(
 }
 
 Future<void> _retryPolicyWaitBeforeRetry(
-  final Duration delay,
-  final CancelToken? cancelToken,
-  final RetryDelay? delayFn,
+  Duration delay,
+  CancelToken? cancelToken,
+  RetryDelay? delayFn,
 ) async {
   final RetryDelay effectiveDelay =
-      delayFn ?? ((final Duration duration) => Future<void>.delayed(duration));
+      delayFn ?? ((Duration duration) => Future<void>.delayed(duration));
 
   if (cancelToken == null) {
     await effectiveDelay(delay);
@@ -104,8 +104,8 @@ Future<void> _retryPolicyWaitBeforeRetry(
 }
 
 Duration _retryPolicyNextDelayChunk({
-  required final Duration remaining,
-  required final Duration checkInterval,
+  required Duration remaining,
+  required Duration checkInterval,
 }) {
   return remaining < checkInterval ? remaining : checkInterval;
 }

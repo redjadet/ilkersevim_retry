@@ -72,10 +72,10 @@ class RetryPolicy {
   /// When [delay] is provided, backoff waits use it (enables test / TimerService
   /// adapters). When null, uses [Future.delayed].
   Future<T> executeWithRetry<T>({
-    required final Future<T> Function() action,
-    final CancelToken? cancelToken,
-    final bool Function(Object error)? shouldRetry,
-    final RetryDelay? delay,
+    required Future<T> Function() action,
+    CancelToken? cancelToken,
+    bool Function(Object error)? shouldRetry,
+    RetryDelay? delay,
   }) => _retryPolicyExecuteWithRetry(
     this,
     action: action,
@@ -88,11 +88,11 @@ class RetryPolicy {
   ///
   /// Uses exponential backoff by default with cap and optional jitter.
   static Duration calculateDelay({
-    required final int attempt,
-    required final Duration baseDelay,
-    required final Duration maxDelay,
-    final RetryStrategy strategy = RetryStrategy.exponential,
-    final bool jitter = true,
+    required int attempt,
+    required Duration baseDelay,
+    required Duration maxDelay,
+    RetryStrategy strategy = RetryStrategy.exponential,
+    bool jitter = true,
   }) {
     final Duration cappedDelay = _capDelay(
       _calculateBaseDelay(
@@ -111,9 +111,9 @@ class RetryPolicy {
   }
 
   static Duration _calculateBaseDelay({
-    required final int attempt,
-    required final Duration baseDelay,
-    required final RetryStrategy strategy,
+    required int attempt,
+    required Duration baseDelay,
+    required RetryStrategy strategy,
   }) {
     return switch (strategy) {
       RetryStrategy.exponential => Duration(
@@ -127,16 +127,16 @@ class RetryPolicy {
   }
 
   static Duration _capDelay(
-    final Duration calculatedDelay,
-    final Duration maxDelay,
+    Duration calculatedDelay,
+    Duration maxDelay,
   ) {
     return calculatedDelay > maxDelay ? maxDelay : calculatedDelay;
   }
 
   static Duration _applyJitter(
-    final Duration cappedDelay,
-    final Duration maxDelay,
-    final Random random,
+    Duration cappedDelay,
+    Duration maxDelay,
+    Random random,
   ) {
     final int cappedMs = cappedDelay.inMilliseconds;
     final int maxMs = maxDelay.inMilliseconds;
@@ -164,7 +164,7 @@ class RetryPolicy {
   );
 
   /// Conservative classifier used by [transientErrors] / [networkErrors].
-  static bool isTransientError(final Object error) {
+  static bool isTransientError(Object error) {
     if (error is CancellationException) {
       return false;
     }

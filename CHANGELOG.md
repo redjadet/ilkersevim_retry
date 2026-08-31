@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Raise minimum SDK to Dart `>=3.13.0`.
+- Pin CI to Dart 3.13.2 stable.
+
 ## 0.1.4
 
 - Sync README install caret with current release.

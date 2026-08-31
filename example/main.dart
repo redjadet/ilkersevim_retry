@@ -7,7 +7,7 @@ Future<void> main() async {
     jitter: false,
   );
 
-  Future<void> immediateDelay(final Duration _) async {}
+  Future<void> immediateDelay(Duration _) async {}
 
   int attempts = 0;
   final int result = await policy.executeWithRetry<int>(
