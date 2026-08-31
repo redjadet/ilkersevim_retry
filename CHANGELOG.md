@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Sync README install caret with current release.
+
 ## 0.1.3
 
 - Add optional policy-level `shouldRetry` (per-call override still wins).
