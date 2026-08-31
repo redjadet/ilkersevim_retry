@@ -126,10 +126,7 @@ class RetryPolicy {
     };
   }
 
-  static Duration _capDelay(
-    Duration calculatedDelay,
-    Duration maxDelay,
-  ) {
+  static Duration _capDelay(Duration calculatedDelay, Duration maxDelay) {
     return calculatedDelay > maxDelay ? maxDelay : calculatedDelay;
   }
 
