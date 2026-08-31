@@ -17,7 +17,6 @@
   non-timeout errors (only `TimeoutException` by default).
 - Document that a null filter still retries every non-cancellation error.
 
-
 ## 0.1.2
 
 - Explain how client-neutral policies centralize backoff, cancellation, and
