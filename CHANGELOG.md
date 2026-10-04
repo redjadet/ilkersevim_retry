@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+- Fix dart2js compilation: replace `0x7FFFFFFFFFFFFFFF` attempt guard with
+  `Number.MAX_SAFE_INTEGER` (`0x1FFFFFFFFFFFFF`) so linear backoff overflow
+  capping still honors `maxDelay` on web.
+
 ## 0.1.6
 
 - Fix `RetryPolicy.calculateDelay` returning incorrect delays for very large

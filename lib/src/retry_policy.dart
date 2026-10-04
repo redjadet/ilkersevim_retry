@@ -22,6 +22,11 @@ enum RetryStrategy {
   fixed,
 }
 
+/// Largest integer exactly representable in JavaScript (`Number.MAX_SAFE_INTEGER`).
+///
+/// Used for attempt overflow guards so this library compiles under dart2js.
+const int _maxSafeJavaScriptInteger = 0x1FFFFFFFFFFFFF;
+
 /// A standardized retry policy for consistent retry behavior across features.
 ///
 /// Provides helper methods for cubits to standardize retry behavior
@@ -171,7 +176,7 @@ class RetryPolicy {
       return Duration(milliseconds: baseMs);
     }
 
-    if (attempt < 0 || attempt >= 0x7FFFFFFFFFFFFFFF) {
+    if (attempt < 0 || attempt >= _maxSafeJavaScriptInteger) {
       return Duration(milliseconds: maxMs);
     }
 

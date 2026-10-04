@@ -320,7 +320,7 @@ void main() {
       'calculateDelay caps linear backoff when factor overflows int math',
       () {
         final Duration delay = RetryPolicy.calculateDelay(
-          attempt: 0x7FFFFFFFFFFFFFFF,
+          attempt: 0x1FFFFFFFFFFFFF,
           baseDelay: const Duration(milliseconds: 100),
           maxDelay: const Duration(seconds: 30),
           strategy: RetryStrategy.linear,
