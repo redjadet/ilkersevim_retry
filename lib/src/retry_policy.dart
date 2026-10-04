@@ -98,6 +98,7 @@ class RetryPolicy {
       _calculateBaseDelay(
         attempt: attempt,
         baseDelay: baseDelay,
+        maxDelay: maxDelay,
         strategy: strategy,
       ),
       maxDelay,
@@ -113,17 +114,73 @@ class RetryPolicy {
   static Duration _calculateBaseDelay({
     required int attempt,
     required Duration baseDelay,
+    required Duration maxDelay,
     required RetryStrategy strategy,
   }) {
     return switch (strategy) {
-      RetryStrategy.exponential => Duration(
-        milliseconds: (baseDelay.inMilliseconds * pow(2, attempt)).toInt(),
+      RetryStrategy.exponential => _exponentialBackoffDelay(
+        attempt: attempt,
+        baseDelay: baseDelay,
+        maxDelay: maxDelay,
       ),
-      RetryStrategy.linear => Duration(
-        milliseconds: baseDelay.inMilliseconds * (attempt + 1),
+      RetryStrategy.linear => _linearBackoffDelay(
+        attempt: attempt,
+        baseDelay: baseDelay,
+        maxDelay: maxDelay,
       ),
       RetryStrategy.fixed => baseDelay,
     };
+  }
+
+  static Duration _exponentialBackoffDelay({
+    required int attempt,
+    required Duration baseDelay,
+    required Duration maxDelay,
+  }) {
+    int milliseconds = baseDelay.inMilliseconds;
+    final int maxMs = maxDelay.inMilliseconds;
+
+    for (int i = 0; i < attempt; i++) {
+      if (milliseconds >= maxMs) {
+        return Duration(milliseconds: milliseconds);
+      }
+
+      final int doubled = milliseconds * 2;
+      if (doubled < milliseconds) {
+        return Duration(milliseconds: maxMs);
+      }
+
+      milliseconds = doubled;
+    }
+
+    return Duration(milliseconds: milliseconds);
+  }
+
+  static Duration _linearBackoffDelay({
+    required int attempt,
+    required Duration baseDelay,
+    required Duration maxDelay,
+  }) {
+    final int baseMs = baseDelay.inMilliseconds;
+    if (baseMs <= 0) {
+      return baseDelay;
+    }
+
+    final int maxMs = maxDelay.inMilliseconds;
+    if (baseMs >= maxMs) {
+      return Duration(milliseconds: baseMs);
+    }
+
+    if (attempt < 0 || attempt >= 0x7FFFFFFFFFFFFFFF) {
+      return Duration(milliseconds: maxMs);
+    }
+
+    final int maxAttemptBeforeCap = (maxMs ~/ baseMs) - 1;
+    if (attempt > maxAttemptBeforeCap) {
+      return Duration(milliseconds: maxMs);
+    }
+
+    return Duration(milliseconds: baseMs * (attempt + 1));
   }
 
   static Duration _capDelay(Duration calculatedDelay, Duration maxDelay) {

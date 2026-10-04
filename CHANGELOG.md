@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+- Fix `RetryPolicy.calculateDelay` returning incorrect delays for very large
+  `attempt` values when exponential or linear backoff math overflowed instead of
+  honoring `maxDelay`.
+
 ## 0.1.5
 
 - Raise minimum SDK to Dart `>=3.13.0`.

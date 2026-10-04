@@ -301,6 +301,36 @@ void main() {
       expect(delay, const Duration(milliseconds: 500));
     });
 
+    test(
+      'calculateDelay caps exponential backoff when attempt overflows int math',
+      () {
+        final Duration delay = RetryPolicy.calculateDelay(
+          attempt: 100,
+          baseDelay: const Duration(seconds: 1),
+          maxDelay: const Duration(seconds: 30),
+          strategy: RetryStrategy.exponential,
+          jitter: false,
+        );
+
+        expect(delay, const Duration(seconds: 30));
+      },
+    );
+
+    test(
+      'calculateDelay caps linear backoff when factor overflows int math',
+      () {
+        final Duration delay = RetryPolicy.calculateDelay(
+          attempt: 0x7FFFFFFFFFFFFFFF,
+          baseDelay: const Duration(milliseconds: 100),
+          maxDelay: const Duration(seconds: 30),
+          strategy: RetryStrategy.linear,
+          jitter: false,
+        );
+
+        expect(delay, const Duration(seconds: 30));
+      },
+    );
+
     test('calculateDelay does not exceed maxDelay when jitter is enabled', () {
       const Duration maxDelay = Duration(milliseconds: 50);
 
