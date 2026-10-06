@@ -1,5 +1,9 @@
 # ilkersevim_retry
 
+[![pub package](https://img.shields.io/pub/v/ilkersevim_retry.svg)](https://pub.dev/packages/ilkersevim_retry)
+[![CI](https://github.com/redjadet/ilkersevim_retry/actions/workflows/ci.yml/badge.svg)](https://github.com/redjadet/ilkersevim_retry/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/redjadet/ilkersevim_retry)](LICENSE)
+
 Retry policies with backoff, jitter, and cancel tokens. Pure Dart; injectable
 `RetryDelay` for testable waits.
 
@@ -21,7 +25,7 @@ License: [Apache-2.0](LICENSE). Issues:
 
 ```yaml
 dependencies:
-  ilkersevim_retry: ^0.1.6
+  ilkersevim_retry: ^0.1.7
 ```
 
 Requires Dart `>=3.13.0`.
